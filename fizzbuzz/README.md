@@ -84,3 +84,6 @@ pnpm test
 | Empty array (n = 0)     | `[]`                                |
 | Correct array length    | `fizzBuzz(10).length === 10`        |
 | Custom rules            | 14 with `[Foo/2, Bar/7]` → `FooBar` |
+| n cannot be negative    | n = -1 → throw                      |
+| n must be an integer    | n = 1.5 → throw                     |
+| Divisor cannot be 0     | { divisor: 0, word:"Test"} → throw  |
