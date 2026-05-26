@@ -2,6 +2,15 @@ import { defaultRules } from "./rules";
 import type { Rule } from "./types";
 
 export const fizzBuzz = (n: number, rules: Rule[] = defaultRules) => {
+  // Validation input
+  if (n < 0) throw new Error("n must be a positive number"); // ex : si n=-1
+  if (n % 1 !== 0) throw new Error("n must be an integer"); // ex : si n=1.5
+
+  // Validation rules
+  if (rules.some((rule) => rule.divisor === 0)) {
+    throw new Error("divisor cannot be 0");
+  }
+
   const output: string[] = [];
 
   for (let num = 1; num <= n; num++) {

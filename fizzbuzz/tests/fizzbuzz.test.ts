@@ -22,6 +22,7 @@ describe("FizzBuzz", () => {
     expect(results[3]).toEqual("4");
   });
 
+  // Edges cases
   test("should return empty array if n is 0", () => {
     const results = fizzBuzz(0);
     expect(results).toEqual([]);
@@ -43,9 +44,26 @@ describe("FizzBuzz", () => {
     expect(results[13]).toEqual("FooBar"); // 14 divisible par 2 et 7
   });
 
-  // Premier élément
   test("should return '1' as first element", () => {
     const results = fizzBuzz(1);
     expect(results[0]).toEqual("1");
+  });
+
+  // input validation
+
+  test("should throw if n is negative", () => {
+    expect(() => fizzBuzz(-1)).toThrow("n must be a positive number");
+  });
+
+  test("should throw if n is not an integer", () => {
+    expect(() => fizzBuzz(1.5)).toThrow("n must be an integer");
+  });
+
+  // rules validation
+
+  test("should throw if a rule has divisor 0", () => {
+    expect(() => fizzBuzz(10, [{ divisor: 0, word: "Test" }])).toThrow(
+      "divisor cannot be 0",
+    );
   });
 });
