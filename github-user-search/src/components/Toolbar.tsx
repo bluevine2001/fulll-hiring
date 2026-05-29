@@ -8,7 +8,13 @@ interface ToolbarProps {
   onDelete: () => void;
 }
 
-const Toolbar = ({ selectedCount, totalCount, onToggleSelectAll, onDuplicate, onDelete }: ToolbarProps) => {
+const Toolbar = ({
+  selectedCount,
+  totalCount,
+  onToggleSelectAll,
+  onDuplicate,
+  onDelete,
+}: ToolbarProps) => {
   const checkboxRef = useRef<HTMLInputElement>(null);
   const allSelected = totalCount > 0 && selectedCount === totalCount;
   const someSelected = selectedCount > 0 && selectedCount < totalCount;
@@ -29,15 +35,23 @@ const Toolbar = ({ selectedCount, totalCount, onToggleSelectAll, onDuplicate, on
           onChange={onToggleSelectAll}
           aria-label="Select all"
         />
-        <span className="toolbar-selected-label">{selectedCount} elements selected</span>
+        <span className="toolbar-selected-label">
+          {selectedCount} elements selected
+        </span>
       </label>
 
       {selectedCount > 0 && (
         <div className="toolbar-actions">
-          <button className="toolbar-action-btn toolbar-action-btn--duplicate" onClick={onDuplicate}>
+          <button
+            className="toolbar-action-btn toolbar-action-btn--duplicate"
+            onClick={onDuplicate}
+          >
             Duplicate
           </button>
-          <button className="toolbar-action-btn toolbar-action-btn--delete" onClick={onDelete}>
+          <button
+            className="toolbar-action-btn toolbar-action-btn--delete"
+            onClick={onDelete}
+          >
             Delete
           </button>
         </div>

@@ -9,28 +9,25 @@ interface UserCardProps {
 const UserCard = ({ user, isSelected, onToggleSelect }: UserCardProps) => {
   return (
     <div className={`user-card ${isSelected ? "user-card--selected" : ""}`}>
-      <button
+      <input
+        type="checkbox"
         className="user-card-checkbox"
-        onClick={() => onToggleSelect(user.id)}
-        aria-label={isSelected ? "Deselect user" : "Select user"}
-        aria-pressed={isSelected}
-      >
-        {isSelected ? "☑" : "☐"}
-      </button>
+        checked={isSelected}
+        onChange={() => onToggleSelect(user.id)}
+      />
 
-      <img src={user.avatar_url} alt={user.login} className="user-card-avatar" />
+      <img
+        src={user.avatar_url}
+        alt={user.login}
+        className="user-card-avatar"
+      />
 
       <div className="user-card-login-container">
         <span className="user-card-id">{user.id}</span>
         <span className="user-card-login">{user.login}</span>
       </div>
 
-      <a
-        href={user.html_url}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="user-card-btn"
-      >
+      <a href={user.html_url} target="_blank" rel="noopener noreferrer" className="user-card-btn">
         View profile
       </a>
     </div>

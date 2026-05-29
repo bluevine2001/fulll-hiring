@@ -2,6 +2,7 @@
   border: 1px solid #000;
   width: fit-content;
   margin: 0 auto;
+  min-width: 600px;
 }
 .gh-header {
   height: 64px;
@@ -166,17 +167,11 @@
   position: absolute;
   top: 6px;
   left: 6px;
-  background: none;
-  border: none;
+  width: 16px;
+  height: 16px;
   cursor: pointer;
-  font-size: 1rem;
-  padding: 0;
-  line-height: 1;
-  color: #888;
-}
-
-.user-card--selected .user-card-checkbox {
-  color: #0078d4;
+  accent-color: #0078d4;
+  margin: 0;
 }
 
 .user-card-avatar {
@@ -214,4 +209,3 @@
   font-size: 0.8rem;
   white-space: nowrap;
 }
-

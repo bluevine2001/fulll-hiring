@@ -5,9 +5,10 @@ interface UserGridProps {
   users: GitHubUser[];
   selectedIds: Set<number>;
   onToggleSelect: (id: number) => void;
+  emptyMessage: string;
 }
 
-const UserGrid = ({ users, selectedIds, onToggleSelect }: UserGridProps) => {
+const UserGrid = ({ users, selectedIds, onToggleSelect, emptyMessage }: UserGridProps) => {
   return (
     <div className="user-grid-scroll">
       <div className="user-grid">
@@ -20,6 +21,9 @@ const UserGrid = ({ users, selectedIds, onToggleSelect }: UserGridProps) => {
           />
         ))}
       </div>
+      {users.length === 0 && (
+        <p style={{ textAlign: "center" }}>{emptyMessage}</p>
+      )}
     </div>
   );
 };
