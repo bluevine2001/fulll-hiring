@@ -2,17 +2,30 @@ import { useEffect, useState } from "react";
 import type { GitHubUser } from "../types";
 import useDebounce from "./useDebounce";
 
+const MAX_CACHE_SIZE = 50;
 const cache = new Map<string, GitHubUser[]>();
 
-const useGithubSearch = (query: string) => {
+export const clearCache = () => cache.clear();
+
+const setCache = (key: string, value: GitHubUser[]) => {
+  if (cache.size >= MAX_CACHE_SIZE) {
+    cache.delete(cache.keys().next().value!);
+  }
+  cache.set(key, value);
+};
+
+const useGithubSearch = (query: string, debounceDelay = 500) => {
   const [data, setData] = useState<GitHubUser[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // le hook useDebounce permet d'éviter de lancer un fetch par touche
-  const debouncedQuery = useDebounce(query);
+  const debouncedQuery = useDebounce(query, debounceDelay);
 
   useEffect(() => {
+    // Abort controller pour éviter la race condition
+    const controller = new AbortController();
+
     const returnEmptyData = () => {
       setData([]);
       setLoading(false);
@@ -25,6 +38,7 @@ const useGithubSearch = (query: string) => {
     const fetchUsers = async () => {
       setLoading(true);
       setError(null);
+      setData([]);
 
       const encodedQuery = encodeURIComponent(debouncedQuery);
 
@@ -40,14 +54,16 @@ const useGithubSearch = (query: string) => {
           return;
         }
 
-        const json = await res.json();
-        cache.set(debouncedQuery, json.items); // stocke en cache
-        setData(json.items);
-      } catch (error) {
-        if (error instanceof Error && error.name === "AbortError") {
-          console.log(`request with ${debouncedQuery} was aborted.`);
+        if (!res.ok) {
+          setError("network");
           return;
         }
+
+        const json = await res.json();
+        setCache(debouncedQuery, json.items);
+        setData(json.items);
+      } catch (error) {
+        if (error instanceof Error && error.name === "AbortError") return;
         setError("network");
       } finally {
         setLoading(false);
@@ -64,9 +80,6 @@ const useGithubSearch = (query: string) => {
       setCachedDataAsResult(debouncedQuery);
       return;
     }
-
-    // Abort controller pour éviter la race condition
-    const controller = new AbortController();
 
     fetchUsers();
 

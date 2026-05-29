@@ -25,7 +25,12 @@
 .user-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  justify-items: center;
   gap: 40px;
+}
+
+.user-grid-empty-message {
+  text-align: center;
 }
 
 @media (max-width: 900px) {
@@ -38,11 +43,18 @@
   .user-grid {
     grid-template-columns: repeat(2, 1fr);
   }
+
+  .gh-search-container {
+    min-width: 400px;
+  }
 }
 
 @media (max-width: 380px) {
   .user-grid {
     grid-template-columns: 1fr;
+  }
+  .gh-search-container {
+    min-width: 300px;
   }
 }
 
