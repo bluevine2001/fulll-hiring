@@ -8,7 +8,12 @@ interface UserGridProps {
   emptyMessage: string;
 }
 
-const UserGrid = ({ users, selectedIds, onToggleSelect, emptyMessage }: UserGridProps) => {
+const UserGrid = ({
+  users,
+  selectedIds,
+  onToggleSelect,
+  emptyMessage,
+}: UserGridProps) => {
   return (
     <div className="user-grid-scroll">
       <div className="user-grid">
@@ -22,7 +27,7 @@ const UserGrid = ({ users, selectedIds, onToggleSelect, emptyMessage }: UserGrid
         ))}
       </div>
       {users.length === 0 && (
-        <p style={{ textAlign: "center" }}>{emptyMessage}</p>
+        <p className="user-grid-empty-message">{emptyMessage}</p>
       )}
     </div>
   );

@@ -30,21 +30,30 @@ function App() {
         <SearchInput query={searchQuery} onChangeQuery={setSearchQuery} />
         {loading && <p>loading ...</p>}
         {error === "rate_limit" && (
-          <p>You have reached the API's Limitation, please retry in a minute.</p>
+          <p>
+            You have reached the API's Limitation, please retry in a minute.
+          </p>
         )}
         {error === "network" && <p>An error occured.</p>}
-        <Toolbar
-          selectedCount={selectedCount}
-          totalCount={totalCount}
-          onToggleSelectAll={toggleSelectAll}
-          onDuplicate={duplicateSelected}
-          onDelete={deleteSelected}
-        />
+
+        {users.length > 0 && (
+          <Toolbar
+            selectedCount={selectedCount}
+            totalCount={totalCount}
+            onToggleSelectAll={toggleSelectAll}
+            onDuplicate={duplicateSelected}
+            onDelete={deleteSelected}
+          />
+        )}
         <UserGrid
           users={users}
           selectedIds={selectedIds}
           onToggleSelect={toggleSelect}
-          emptyMessage={searchQuery.trim() ? "No users found." : "Search for GitHub users..."}
+          emptyMessage={
+            searchQuery.trim()
+              ? "No users found."
+              : "Search for GitHub users..."
+          }
         />
       </div>
     </div>
