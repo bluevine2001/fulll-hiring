@@ -1,8 +1,9 @@
-import { useState } from "react";
+type SearchInputProps = {
+  query: string;
+  onChangeQuery: (q: string) => void;
+};
 
-const SearchInput = () => {
-  const [query, setQuery] = useState("");
-
+const SearchInput = ({ query, onChangeQuery }: SearchInputProps) => {
   return (
     <div className="search-input-wrapper">
       <input
@@ -10,7 +11,7 @@ const SearchInput = () => {
         className="search-input"
         placeholder="Search GitHub users..."
         value={query}
-        onChange={(e) => setQuery(e.target.value)}
+        onChange={(e) => onChangeQuery(e.target.value)}
       />
     </div>
   );
