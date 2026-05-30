@@ -2,19 +2,29 @@ import type { GitHubUser } from "../types";
 
 interface UserCardProps {
   user: GitHubUser;
+  isEditMode: boolean;
   isSelected: boolean;
   onToggleSelect: (id: number) => void;
 }
 
-const UserCard = ({ user, isSelected, onToggleSelect }: UserCardProps) => {
+const UserCard = ({
+  user,
+  isEditMode,
+  isSelected,
+  onToggleSelect,
+}: UserCardProps) => {
   return (
-    <div className={`user-card ${isSelected ? "user-card--selected" : ""}`}>
-      <input
-        type="checkbox"
-        className="user-card-checkbox"
-        checked={isSelected}
-        onChange={() => onToggleSelect(user.id)}
-      />
+    <div
+      className={`user-card ${isEditMode && isSelected ? "user-card--selected" : ""}`}
+    >
+      {isEditMode && (
+        <input
+          type="checkbox"
+          className="user-card-checkbox"
+          checked={isSelected}
+          onChange={() => onToggleSelect(user.id)}
+        />
+      )}
 
       <img
         src={user.avatar_url}
@@ -27,7 +37,12 @@ const UserCard = ({ user, isSelected, onToggleSelect }: UserCardProps) => {
         <span className="user-card-login">{user.login}</span>
       </div>
 
-      <a href={user.html_url} target="_blank" rel="noopener noreferrer" className="user-card-btn">
+      <a
+        href={user.html_url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="user-card-btn"
+      >
         View profile
       </a>
     </div>

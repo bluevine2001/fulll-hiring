@@ -146,6 +146,63 @@
   color: #d9534f;
 }
 
+/* Toggle */
+.toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.toggle-input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-track {
+  position: relative;
+  width: 36px;
+  height: 20px;
+  background-color: #ccc;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.toggle-input:checked + .toggle-track {
+  background-color: #0078d4;
+}
+
+.toggle-thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 16px;
+  height: 16px;
+  background-color: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-input:checked + .toggle-track .toggle-thumb {
+  transform: translateX(16px);
+}
+
+.toggle-input:focus-visible + .toggle-track {
+  outline: 2px solid #0078d4;
+  outline-offset: 2px;
+}
+
+.toggle-text {
+  font-size: 0.875rem;
+  color: #333;
+  white-space: nowrap;
+}
+
 /* UserCard */
 .user-card {
   position: relative;

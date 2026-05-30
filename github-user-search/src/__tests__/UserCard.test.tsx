@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { describe, expect, test, vi } from "vitest";
 import UserCard from "../components/UserCard";
+import { setup } from "../test/setup";
 
 const mockUser = {
   id: 1,
@@ -13,7 +13,12 @@ const mockUser = {
 describe("UserCard", () => {
   test("displays user login and id", () => {
     render(
-      <UserCard user={mockUser} isSelected={false} onToggleSelect={() => {}} />,
+      <UserCard
+        user={mockUser}
+        isSelected={false}
+        onToggleSelect={() => {}}
+        isEditMode={true}
+      />,
     );
 
     expect(screen.getByText("mojombo")).toBeInTheDocument();
@@ -22,7 +27,12 @@ describe("UserCard", () => {
 
   test("displays avatar with correct alt text", () => {
     render(
-      <UserCard user={mockUser} isSelected={false} onToggleSelect={() => {}} />,
+      <UserCard
+        user={mockUser}
+        isSelected={false}
+        onToggleSelect={() => {}}
+        isEditMode={true}
+      />,
     );
 
     const avatar = screen.getByAltText("mojombo");
@@ -31,7 +41,12 @@ describe("UserCard", () => {
 
   test("view profile link points to correct url and opens in new tab", () => {
     render(
-      <UserCard user={mockUser} isSelected={false} onToggleSelect={() => {}} />,
+      <UserCard
+        user={mockUser}
+        isSelected={false}
+        onToggleSelect={() => {}}
+        isEditMode={true}
+      />,
     );
 
     const link = screen.getByRole("link", { name: /view profile/i });
@@ -41,7 +56,12 @@ describe("UserCard", () => {
 
   test("checkbox is checked when selected", () => {
     render(
-      <UserCard user={mockUser} isSelected={true} onToggleSelect={() => {}} />,
+      <UserCard
+        user={mockUser}
+        isSelected={true}
+        onToggleSelect={() => {}}
+        isEditMode={true}
+      />,
     );
 
     expect(screen.getByRole("checkbox")).toBeChecked();
@@ -49,7 +69,12 @@ describe("UserCard", () => {
 
   test("checkbox is unchecked when not selected", () => {
     render(
-      <UserCard user={mockUser} isSelected={false} onToggleSelect={() => {}} />,
+      <UserCard
+        user={mockUser}
+        isSelected={false}
+        onToggleSelect={() => {}}
+        isEditMode={true}
+      />,
     );
 
     expect(screen.getByRole("checkbox")).not.toBeChecked();
@@ -57,15 +82,16 @@ describe("UserCard", () => {
 
   test("calls onToggleSelect with user id when checkbox clicked", async () => {
     const onToggleSelect = vi.fn();
-    render(
+    const { user } = setup(
       <UserCard
         user={mockUser}
         isSelected={false}
         onToggleSelect={onToggleSelect}
+        isEditMode={true}
       />,
     );
 
-    await userEvent.click(screen.getByRole("checkbox"));
+    await user.click(screen.getByRole("checkbox"));
 
     expect(onToggleSelect).toHaveBeenCalledWith(1);
     expect(onToggleSelect).toHaveBeenCalledTimes(1);
@@ -73,7 +99,12 @@ describe("UserCard", () => {
 
   test("applies selected class when selected", () => {
     const { container } = render(
-      <UserCard user={mockUser} isSelected={true} onToggleSelect={() => {}} />,
+      <UserCard
+        user={mockUser}
+        isSelected={true}
+        onToggleSelect={() => {}}
+        isEditMode={true}
+      />,
     );
 
     expect(container.firstChild).toHaveClass("user-card--selected");
@@ -81,7 +112,38 @@ describe("UserCard", () => {
 
   test("does not apply selected class when not selected", () => {
     const { container } = render(
-      <UserCard user={mockUser} isSelected={false} onToggleSelect={() => {}} />,
+      <UserCard
+        user={mockUser}
+        isSelected={false}
+        onToggleSelect={() => {}}
+        isEditMode={true}
+      />,
+    );
+
+    expect(container.firstChild).not.toHaveClass("user-card--selected");
+  });
+
+  test("does not display select checkbox when editmode is off", () => {
+    render(
+      <UserCard
+        user={mockUser}
+        isSelected={false}
+        onToggleSelect={() => {}}
+        isEditMode={false}
+      />,
+    );
+
+    expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+  });
+
+  test("does not apply selected class when editmode is off", () => {
+    const { container } = render(
+      <UserCard
+        user={mockUser}
+        isSelected={false}
+        onToggleSelect={() => {}}
+        isEditMode={false}
+      />,
     );
 
     expect(container.firstChild).not.toHaveClass("user-card--selected");

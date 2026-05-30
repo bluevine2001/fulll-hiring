@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
 import { describe, expect, test, vi } from "vitest";
 import SearchInput from "../components/SearchInput";
+import { setup } from "../test/setup";
 
 describe("SearchInput", () => {
   test("renders with placeholder text", () => {
@@ -20,9 +20,11 @@ describe("SearchInput", () => {
 
   test("calls onChangeQuery with new value when typing", async () => {
     const onChangeQuery = vi.fn();
-    render(<SearchInput query="" onChangeQuery={onChangeQuery} />);
+    const { user } = setup(
+      <SearchInput query="" onChangeQuery={onChangeQuery} />,
+    );
 
-    await userEvent.type(screen.getByRole("textbox"), "vue");
+    await user.type(screen.getByRole("textbox"), "vue");
 
     expect(onChangeQuery).toHaveBeenCalledTimes(3); // une fois par lettre
     expect(onChangeQuery).toHaveBeenLastCalledWith("e"); // dernière lettre tapée
@@ -30,9 +32,11 @@ describe("SearchInput", () => {
 
   test("calls onChangeQuery with empty string when cleared", async () => {
     const onChangeQuery = vi.fn();
-    render(<SearchInput query="react" onChangeQuery={onChangeQuery} />);
+    const { user } = setup(
+      <SearchInput query="react" onChangeQuery={onChangeQuery} />,
+    );
 
-    await userEvent.clear(screen.getByRole("textbox"));
+    await user.clear(screen.getByRole("textbox"));
 
     expect(onChangeQuery).toHaveBeenLastCalledWith("");
   });
