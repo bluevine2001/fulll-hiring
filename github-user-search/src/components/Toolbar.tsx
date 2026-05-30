@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import Toggle from "./Toggle";
 
 interface ToolbarProps {
   selectedCount: number;
@@ -6,6 +7,8 @@ interface ToolbarProps {
   onToggleSelectAll: () => void;
   onDuplicate: () => void;
   onDelete: () => void;
+  isEditMode: boolean;
+  onEditModeChange: () => void;
 }
 
 const Toolbar = ({
@@ -14,6 +17,8 @@ const Toolbar = ({
   onToggleSelectAll,
   onDuplicate,
   onDelete,
+  isEditMode,
+  onEditModeChange,
 }: ToolbarProps) => {
   const checkboxRef = useRef<HTMLInputElement>(null);
   const allSelected = totalCount > 0 && selectedCount === totalCount;
@@ -27,35 +32,45 @@ const Toolbar = ({
 
   return (
     <div className="toolbar">
-      <label className="toolbar-select-all">
-        <input
-          ref={checkboxRef}
-          type="checkbox"
-          checked={allSelected}
-          onChange={onToggleSelectAll}
-          aria-label="Select all"
-        />
-        <span className="toolbar-selected-label">
-          {selectedCount} elements selected
-        </span>
-      </label>
-
-      {selectedCount > 0 && (
-        <div className="toolbar-actions">
-          <button
-            className="toolbar-action-btn toolbar-action-btn--duplicate"
-            onClick={onDuplicate}
-          >
-            Duplicate
-          </button>
-          <button
-            className="toolbar-action-btn toolbar-action-btn--delete"
-            onClick={onDelete}
-          >
-            Delete
-          </button>
-        </div>
+      {isEditMode && (
+        <label className="toolbar-select-all">
+          <input
+            ref={checkboxRef}
+            type="checkbox"
+            checked={allSelected}
+            onChange={onToggleSelectAll}
+            aria-label="Select all"
+          />
+          <span className="toolbar-selected-label">
+            {selectedCount} elements selected
+          </span>
+        </label>
       )}
+
+      <div className="toolbar-actions">
+        {isEditMode && selectedCount > 0 && (
+          <>
+            <button
+              className="toolbar-action-btn toolbar-action-btn--duplicate"
+              onClick={onDuplicate}
+            >
+              Duplicate
+            </button>
+            <button
+              className="toolbar-action-btn toolbar-action-btn--delete"
+              onClick={onDelete}
+            >
+              Delete
+            </button>
+          </>
+        )}
+        <Toggle
+          checked={isEditMode}
+          onChange={onEditModeChange}
+          label="Edit"
+          id="edit-mode-toggle"
+        />
+      </div>
     </div>
   );
 };

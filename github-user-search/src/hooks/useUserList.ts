@@ -5,6 +5,7 @@ export function useUserList(sourceUsers: GitHubUser[]) {
   const [users, setUsers] = useState<GitHubUser[]>(sourceUsers);
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
   const [prevSource, setPrevSource] = useState(sourceUsers);
+  const [editMode, setEditMode] = useState(false);
 
   if (prevSource !== sourceUsers) {
     setPrevSource(sourceUsers);
@@ -19,6 +20,11 @@ export function useUserList(sourceUsers: GitHubUser[]) {
       else next.add(id);
       return next;
     });
+  };
+
+  const toggleEditMode = () => {
+    setEditMode((prev) => !prev);
+    setSelectedIds(new Set());
   };
 
   const toggleSelectAll = () => {
@@ -48,8 +54,10 @@ export function useUserList(sourceUsers: GitHubUser[]) {
     selectedIds,
     selectedCount: selectedIds.size,
     totalCount: users.length,
+    editMode,
     toggleSelect,
     toggleSelectAll,
+    toggleEditMode,
     duplicateSelected,
     deleteSelected,
   };

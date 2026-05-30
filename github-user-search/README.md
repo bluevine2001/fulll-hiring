@@ -38,13 +38,18 @@ I also extracted the toolbar logic (selection, duplicate, delete) into a dedicat
 It receives the search results as input and resets automatically when the source changes,
 keeping `App.tsx` clean and each piece of logic easy to find and maintain.
 
+For the edit mode (bonus), I chose props drilling over React Context,
+since this is a small SPA with 3-4 levels of components at most.
+Context would have added complexity without any noticeable benefit.
+The React team themselves recommend against over-abstracting for cases like this.
+
 Finally, I kept a structured project architecture even on a small exercise —
 separating hooks, components, types and test utilities because it reflects how I work
 on real projects and helps avoid technical debt from day one.
 
 ## Tests
 
-The project has 38 tests across 6 test files, covering hooks and components.
+The project has 55 tests across 7 test files, covering hooks and components.
 
 **Tools:** Vitest + React Testing Library + MSW (Mock Service Worker) for API mocking.
 

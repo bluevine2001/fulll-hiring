@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, test, vi } from "vitest";
 import UserGrid from "../components/UserGrid";
+import { setup } from "../test/setup";
 import type { GitHubUser } from "../types";
 
 const mockUsers: GitHubUser[] = [
@@ -26,6 +27,7 @@ describe("UserGrid", () => {
         selectedIds={new Set()}
         onToggleSelect={() => {}}
         emptyMessage="No results"
+        isEditMode={true}
       />,
     );
 
@@ -39,6 +41,7 @@ describe("UserGrid", () => {
         selectedIds={new Set()}
         onToggleSelect={() => {}}
         emptyMessage="No users found"
+        isEditMode={false}
       />,
     );
 
@@ -52,6 +55,7 @@ describe("UserGrid", () => {
         selectedIds={new Set()}
         onToggleSelect={() => {}}
         emptyMessage="No users found"
+        isEditMode={false}
       />,
     );
 
@@ -65,6 +69,7 @@ describe("UserGrid", () => {
         selectedIds={new Set([1])}
         onToggleSelect={() => {}}
         emptyMessage="No results"
+        isEditMode={true}
       />,
     );
 
@@ -75,21 +80,18 @@ describe("UserGrid", () => {
 
   test("calls onToggleSelect with correct id when card clicked", async () => {
     const onToggleSelect = vi.fn();
-    render(
+    const { user } = setup(
       <UserGrid
         users={mockUsers}
         selectedIds={new Set()}
         onToggleSelect={onToggleSelect}
         emptyMessage="No results"
+        isEditMode={true}
       />,
     );
 
     const checkboxes = screen.getAllByRole("checkbox");
-    await import("@testing-library/user-event").then(
-      async ({ default: userEvent }) => {
-        await userEvent.click(checkboxes[1]);
-      },
-    );
+    await user.click(checkboxes[1]);
 
     expect(onToggleSelect).toHaveBeenCalledWith(2);
   });

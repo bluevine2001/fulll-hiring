@@ -3,6 +3,7 @@ import UserCard from "./UserCard";
 
 interface UserGridProps {
   users: GitHubUser[];
+  isEditMode: boolean;
   selectedIds: Set<number>;
   onToggleSelect: (id: number) => void;
   emptyMessage: string;
@@ -10,6 +11,7 @@ interface UserGridProps {
 
 const UserGrid = ({
   users,
+  isEditMode,
   selectedIds,
   onToggleSelect,
   emptyMessage,
@@ -21,6 +23,7 @@ const UserGrid = ({
           <UserCard
             key={user.id}
             user={user}
+            isEditMode={isEditMode}
             isSelected={selectedIds.has(user.id)}
             onToggleSelect={onToggleSelect}
           />
