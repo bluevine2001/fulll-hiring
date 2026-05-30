@@ -1,73 +1,75 @@
-# React + TypeScript + Vite
+# GitHub User Search
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Getting started
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash //
+pnpm install
+pnpm dev
+pnpm test
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Features
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+- Real-time search as you type (debounced 500ms)
+- GitHub users displayed in a responsive grid
+- Per-card and select-all checkbox selection
+- Duplicate and delete selected items
+- Cache: repeated queries served instantly without re-fetching
+- Rate limit handling with user-friendly error message
+- Empty states: no results / initial state
+- Bonus: Edit mode
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Architecture & technical decisions
+
+The most interesting challenge here was handling GitHub API's rate limit of 10 requests per minute.
+I used it as an opportunity to build `useGithubSearch`, a custom hook inspired by useSWR and TanStack Query,
+but written from scratch without any dependency.
+
+It solves three classic problems that come up when using `useEffect` + `fetch` in React:
+
+- **Race conditions** — handled with `AbortController`. When the user types quickly,
+  outdated requests are cancelled so stale results never overwrite fresh ones.
+- **Redundant API calls** — handled with a `Map`-based cache with a max size of 50 entries (LRU).
+  Repeated queries are served instantly without hitting the API again.
+- **Too many requests per keystroke** — handled with a custom `useDebounce` hook (500ms delay),
+  so the API is only called when the user stops typing.
+
+I also extracted the toolbar logic (selection, duplicate, delete) into a dedicated `useUserList` hook.
+It receives the search results as input and resets automatically when the source changes,
+keeping `App.tsx` clean and each piece of logic easy to find and maintain.
+
+Finally, I kept a structured project architecture even on a small exercise —
+separating hooks, components, types and test utilities because it reflects how I work
+on real projects and helps avoid technical debt from day one.
+
+## Tests
+
+The project has 38 tests across 6 test files, covering hooks and components.
+
+**Tools:** Vitest + React Testing Library + MSW (Mock Service Worker) for API mocking.
+
+**Hooks**
+
+- `useGithubSearch` — fetch lifecycle, cache hit, race condition, rate limit (403), network error, empty query, results reset on query change
+- `useUserList` — selection toggle, select all / deselect all, duplicate with unique IDs, delete
+
+**Components**
+
+- `UserCard` — rendering, checkbox state, link URL, selected class, callback
+- `UserGrid` — correct number of cards, empty message, selection passed correctly
+- `Toolbar` — counter display, duplicate/delete visibility, indeterminate checkbox state, callbacks
+- `SearchInput` — rendering, controlled value, onChange callback
+
+## Possible improvements
+
+These are not things I didn't have time for, but rather enhancements
+that would make sense in a production context:
+
+- **GitHub token** — adding a `VITE_GITHUB_TOKEN` env variable would raise
+  the rate limit from 10 to 60 requests/minute
+- **Pagination** — the GitHub API returns up to 30 results by default,
+  adding a "load more" button would improve the experience on broad queries
+- **Accessibility** — adding `aria-live` to announce new search results
+  to screen readers
+- **Cache persistence** — storing the cache in `sessionStorage`
+  to survive page refreshes
